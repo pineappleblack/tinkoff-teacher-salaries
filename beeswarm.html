@@ -66,12 +66,12 @@ var svg = d3.select("body")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 //Global variables 
-var x = function(d) { return d.salary; };
+var x = function(d) { return d.Salary; };
 var y = function(d) { return 0 };
        
 //X scale
 var xScale = d3.scale.linear()
-               .domain([0, 10])
+               .domain([0, 100000])
                .range([0, width]);
 
 //Y scale
@@ -96,7 +96,7 @@ var xAxis = d3.svg.axis()
 var yAxis = d3.svg.axis()
                   .scale(yScale)
                   .orient("left");       
-
+                
 //Defining the forcement 
 var bubbleChart = d3.forceChart()
                     .size([width, height])
