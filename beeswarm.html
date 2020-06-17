@@ -1,63 +1,29 @@
 <!DOCTYPE html>
-<meta charset="utf-8">
 
-<!-- Google fonts Second Reference-->  
-<link href="https://fonts.googleapis.com/css?family=Barlow:100,200,300,400,500&display=swap" rel="stylesheet">
+<head>
+    <!DOCTYPE html>
+    <meta charset="utf-8">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <link rel="stylesheet" href="styles.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<meta charset="utf-8">
 
 <!-- Connecting with D3 library-->
 <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 <script src="force-chart.js"></script>
 
-<!-- Creating the headlines -->
-<p id="h1"> Multiple Beeswarm Chart </p>
-<p id="h2"> This block is showing the usage of a small multiple beeswarm chart</p>  
-<div id="link">Redesigned by Sandra Becker | 
-<a href="https://slides.com/sandravizmad">sandravizmad</a></div>
+
 
 <!-- Create the charting area as a div with a sepecifi id -->  
 <div id="my_dataviz"></div>
 
 <style>
 
-/*Defining text stylings*/ 
-  
-#h1 {
-  font-size: 50px;
-  margin: 0px 0px 2px 0px;
-  font-family: 'Barlow', sans-serif;
-  font-weight: 100;
-  font-variant: small-caps slashed-zero;
-  color: #f206d3;
-  }
-  
-#h2 {
-  font-size: 20px;
-  margin: 0px 0px 0px 0px;
-  font-family: 'Barlow', sans-serif;
-  font-weight: 200;
-  font-variant: small-caps slashed-zero;
-  color: #478adb;
-  }
-  
-#link {
-	font-family: 'Barlow', sans-serif;
-  font-size: 6px;
-  font-variant: small-caps slashed-zero;
-	margin: 8px 10px 2px 4px;
-  color: #778287;
-}
- 
-a:link, a:visited, a:active {
-	text-decoration: none;
-  color: #778287;
-  border-bottom: 0.6px dotted #D1D5D7;
-}
-  
-body {
-  font-family: 'Barlow', sans-serif;
-  background-color:white;
-}
-          
+    
 /*Defining axis stylings*/
 
 .x-axis text,  .y-axis text {
@@ -78,31 +44,6 @@ body {
 .x-axis line, .y-axis line {
         fill: none;
         stroke-width: 0;
-        stroke-opacity:1;
-        stroke: #778287;
-      }
-  
-/*Defining chart stylings*/
-    
-.legend {
-        font-family: 'Barlow', sans-serif;
-      	font-weight: 100;
-        font-size:10px;
-      	opacity:0.8;
-        fill: #778287;
-      }
- 
-.legend {
-        font-family: 'Barlow', sans-serif;
-      	font-weight: 100;
-        font-size:14px;
-      	opacity:0.8;
-        fill: #778287;
-      }
-
-.legend circle {
-        fill: none;
-        stroke-width: 3;
         stroke-opacity:1;
         stroke: #778287;
       }
@@ -136,18 +77,13 @@ var xScale = d3.scale.linear()
 
 //Y scale
 var yScale = d3.scale.ordinal()
-               .domain(["Comedy", "Action", "Romance", "Animation", "Drama"])
+               .domain(["Зарплаты"])
                .rangeBands([height, 0]);
 
 //Size sclae
 var areaScale = d3.scale
                   .linear()
                   .range([0, 125]);
- 
-//Color scale
-var colorScale = d3.scale.quantize()
-                   .domain([0, 10])
-                   .range(["#478adb","#f206d3"]);
 
 //Saving the apllied x scale in a variable  
 var xValue = function(d) { return xScale(x(d)); };
@@ -159,9 +95,6 @@ var yValue = function(d) { return yScale(y(d)) + yScale.rangeBand()/2; };
 var rValue = function(d) {
              var A = areaScale(area(d));
              return Math.sqrt(A / Math.PI);};
-  
-//Saving the apllied x scale in a variable  
-var colorValue = function(d) { return colorScale(x(d)); };
        
 //X axis
 var xAxis = d3.svg.axis()
@@ -177,7 +110,7 @@ var yAxis = d3.svg.axis()
 var bubbleChart = d3.forceChart()
                     .size([width, height])
                     .x(xValue)
-                    .y(yValue)
+                    .y(1)
                     .r(rValue)
                     .xGravity(2)    
                     .yGravity(1/3); 
@@ -207,58 +140,50 @@ svg.append("g")
    .selectAll(".tick line")
    .attr("x2", width)
    .attr("stroke-dasharray", "1, 2");
-         
-// Draw legend
-svg.append("g")
-   .call(legend);
+ 
+// Определение тултипа
+var tooltip = d3.select("body").append("div")	
+    .attr("class", "tooltip")				
+    .style("opacity", 0);
+
             
 //Draw bubbles
 svg.append("g")
-   .call(bubbleChart, movies)
-   .attr("class", "bubbles")
-   .selectAll(".node")
-   .append("circle")
-   .attr("r", function(d) { return d.r0; })
-   .attr("fill", colorValue);
-    
+    .call(bubbleChart, movies)
+    .attr("class", "bubbles")
+    .attr("transform", "translate(0," + height/5 + ")")
+    .selectAll(".node")
+    .append("circle")
+    //    .attr("r", function(d) { return d.r0; })
+    .attr("r", function(d) { return 3; })
+    .attr("fill", '#1f4068')
+    .on("mouseover", function(d) {	
+                tooltip_width = tooltip.node().getBoundingClientRect().width
+                
+                tooltip.transition()		
+                    .duration(200)		
+                    .style("opacity", .9);
+
+                tooltip.html("тултип")
+                
+                tooltip_height = tooltip.node().getBoundingClientRect().height
+                tooltip
+                    .style("left", (d3.event.pageX - tooltip_width) + "px")		
+                    .style("top", (d3.event.pageY - tooltip_height) + "px");
+                
+                d3.select(this)
+                    .transition()
+                    .style("fill", "#7696cb");	
+        })					
+        .on("mouseout", function(d) {		
+            tooltip.transition()		
+                .duration(500)		
+                .style("opacity", 0);
+            
+            d3.select(this)
+                .transition()
+                .style('fill', function(d) { return "red" });
+        });
 });
-       
-  
-//Creating a legend 
-function legend(selection) {
-         
-var legendData = [
-           { budget: 200000000, text: "$200 million", dy: 0 },
-           { budget: 100000000, text: "$100 million", dy: 20 },
-           { budget: 50000000, text: "$50 million", dy: 40 },
-           { budget: 10000000, text: "$10 million", dy: 60 }
-         ];
-         
-var legend = selection
-            .attr("class", "legend")
-            .attr("transform", "translate(" + xScale(9.4) + "," + (0) + ")")
-         
-legend.append("text")
-      .attr("dx", -6)
-      .attr("dy", -25)
-      .text("Budget");
-          
-legend.selectAll(".item")
-      .data(legendData)
-      .enter()
-      .append("g")
-      .attr("transform", function(d) { return "translate(0," + d.dy + ")"; })
-      .each(function(d) {
-       d3.select(this)
-         .append("circle")
-         .attr("class", "legend circle")
-         .attr("r", rValue(d));
-       d3.select(this)
-         .append("text")
-         .attr("dx", 10)
-         .attr("dy", 4)
-         .text(d.text);
-       });
-}
 
 </script>
