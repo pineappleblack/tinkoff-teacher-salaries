@@ -20,11 +20,13 @@ d3.forceChart = function() {
     .gravity(0);
   
   function chart(selection, nodes) {
+
+    console.log(nodes[0])
     
     if (shape === "circle") { collide = collideCircle; }
     else if (shape === "square") { collide = collideSquare; }
     else { console.error("forceChart.shape must be 'circle' or 'square'"); }
-    
+
     nodes = nodes
       .map(function(d) {
         d.x = xStart(d);

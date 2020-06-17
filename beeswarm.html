@@ -66,9 +66,8 @@ var svg = d3.select("body")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 //Global variables 
-var x = function(d) { return d.rating; };
-var y = function(d) { return d.genre; };
-var area = function(d) { return d.budget; };
+var x = function(d) { return d.salary; };
+var y = function(d) { return 0 };
        
 //X scale
 var xScale = d3.scale.linear()
@@ -80,10 +79,6 @@ var yScale = d3.scale.ordinal()
                .domain(["Зарплаты"])
                .rangeBands([height, 0]);
 
-//Size sclae
-var areaScale = d3.scale
-                  .linear()
-                  .range([0, 125]);
 
 //Saving the apllied x scale in a variable  
 var xValue = function(d) { return xScale(x(d)); };
@@ -91,11 +86,7 @@ var xValue = function(d) { return xScale(x(d)); };
 //Saving the apllied y scale in a variable  
 var yValue = function(d) { return yScale(y(d)) + yScale.rangeBand()/2; };
 
-//Saving the apllied x scale in a variable  
-var rValue = function(d) {
-             var A = areaScale(area(d));
-             return Math.sqrt(A / Math.PI);};
-       
+
 //X axis
 var xAxis = d3.svg.axis()
                   .scale(xScale)
@@ -111,16 +102,13 @@ var bubbleChart = d3.forceChart()
                     .size([width, height])
                     .x(xValue)
                     .y(1)
-                    .r(rValue)
+                    .r(3)
                     .xGravity(2)    
                     .yGravity(1/3); 
  
 // Data loading 
-d3.json("https://raw.githubusercontent.com/pineappleblack/tinkoff-teacher-salaries/master/movies.json", function(error, movies) {
+d3.json("https://raw.githubusercontent.com/pineappleblack/tinkoff-teacher-salaries/master/salaries_data.json", function(error, movies) {
          if (error) throw error;
-  
-//Domain scale 
-areaScale.domain([0,d3.max(movies, area)]);
          
 //Draw x axes
 svg.append("g")
