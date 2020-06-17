@@ -54,6 +54,7 @@ d3.forceChart = function() {
         .each(gravity(e.alpha * .1))
         .each(collide(.5))
         .attr("transform", function(d) {
+          console.log(d.x, d.y)
           return "translate(" + d.x + "," + d.y + ")";
         })
         .call(tickUpdate);
