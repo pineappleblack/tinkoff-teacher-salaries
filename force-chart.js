@@ -20,8 +20,6 @@ d3.forceChart = function() {
     .gravity(0);
   
   function chart(selection, nodes) {
-
-    console.log(nodes[0])
     
     if (shape === "circle") { collide = collideCircle; }
     else if (shape === "square") { collide = collideSquare; }
@@ -54,7 +52,6 @@ d3.forceChart = function() {
         .each(gravity(e.alpha * .1))
         .each(collide(.5))
         .attr("transform", function(d) {
-          console.log(d.x, d.y)
           return "translate(" + d.x + "," + d.y + ")";
         })
         .call(tickUpdate);
