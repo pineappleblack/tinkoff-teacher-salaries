@@ -68,16 +68,22 @@ var svg = d3.select("body")
 //Global variables 
 var x = function(d) { return d.Salary; };
 var y = function(d) { return 0 };
+var area = function(d) { return d.cnt; };
        
 //X scale
 var xScale = d3.scale.linear()
-               .domain([0, 100000])
+               .domain([0, 120000])
                .range([0, width]);
 
 //Y scale
 var yScale = d3.scale.ordinal()
                .domain(["Зарплаты"])
                .rangeBands([height, 0]);
+               
+//Size sclae
+var areaScale = d3.scale
+                  .linear()
+                  .range([0, 125]);
 
 
 //Saving the apllied x scale in a variable  
@@ -85,6 +91,11 @@ var xValue = function(d) { return xScale(x(d)); };
  
 //Saving the apllied y scale in a variable  
 var yValue = function(d) { return yScale(y(d)) + yScale.rangeBand()/2; };
+
+//Saving the apllied x scale in a variable  
+var rValue = function(d) {
+             var A = areaScale(area(d));
+             return Math.sqrt(A / Math.PI) * 5;};
 
 
 //X axis
@@ -102,17 +113,21 @@ var bubbleChart = d3.forceChart()
                     .size([width, height])
                     .x(xValue)
                     .y(1)
-                    .r(3)
+                    .r(rValue)
                     .xGravity(10)    
                     .yGravity(1/10)
                     .draggable(false)
  
 // Data loading 
-d3.json("https://raw.githubusercontent.com/pineappleblack/tinkoff-teacher-salaries/master/salaries_data.json", function(error, movies) {
+d3.json("https://raw.githubusercontent.com/pineappleblack/tinkoff-teacher-salaries/master/salaries_agg_data.json", function(error, movies) {
          if (error) throw error;
 
-data = movies.slice(1, 10000)
+// data = movies.slice(1, 10000)
+data = movies
 console.log(data.length)
+
+//Domain scale 
+areaScale.domain([0,d3.max(data, area)]);
 
 //Draw x axes
 svg.append("g")
@@ -147,7 +162,7 @@ svg.append("g")
     .selectAll(".node")
     .append("circle")
     //    .attr("r", function(d) { return d.r0; })
-    .attr("r", function(d) { return 3; })
+    .attr("r", function(d) { return rValue(d); })
     .attr("fill", '#1f4068')
     .on("mouseover", function(d) {	
                 tooltip_width = tooltip.node().getBoundingClientRect().width
