@@ -103,13 +103,17 @@ var bubbleChart = d3.forceChart()
                     .x(xValue)
                     .y(1)
                     .r(3)
-                    .xGravity(2)    
-                    .yGravity(1/3); 
+                    .xGravity(10)    
+                    .yGravity(1/10)
+                    .draggable(false)
  
 // Data loading 
 d3.json("https://raw.githubusercontent.com/pineappleblack/tinkoff-teacher-salaries/master/salaries_data.json", function(error, movies) {
          if (error) throw error;
-         
+
+data = movies.slice(1, 10000)
+console.log(data.length)
+
 //Draw x axes
 svg.append("g")
    .attr("class", "x-axis ")
@@ -137,7 +141,7 @@ var tooltip = d3.select("body").append("div")
             
 //Draw bubbles
 svg.append("g")
-    .call(bubbleChart, movies)
+    .call(bubbleChart, data)
     .attr("class", "bubbles")
     .attr("transform", "translate(0," + height/2 + ")")
     .selectAll(".node")
@@ -152,7 +156,7 @@ svg.append("g")
                     .duration(200)		
                     .style("opacity", .9);
 
-                tooltip.html("тултип")
+                tooltip.html(d.Salary)
                 
                 tooltip_height = tooltip.node().getBoundingClientRect().height
                 tooltip
@@ -170,7 +174,7 @@ svg.append("g")
             
             d3.select(this)
                 .transition()
-                .style('fill', function(d) { return "red" });
+                .style('fill', function(d) { return "#1f4068" });
         });
 });
 
