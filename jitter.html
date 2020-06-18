@@ -41,7 +41,7 @@ var svg = d3.select("#my_dataviz")
           "translate(" + margin.left + "," + margin.top + ")");
 
 // Read the data and compute summary statistics for each specie
-d3.json("https://raw.githubusercontent.com/pineappleblack/tinkoff-teacher-salaries/master/salaries_agg_data.json", function(data) {
+d3.json("https://raw.githubusercontent.com/pineappleblack/tinkoff-teacher-salaries/master/salaries_rounded_agg_data.json", function(data) {
 
   data = data.slice().sort((a, b) => d3.descending(parseFloat(a.cnt), parseFloat(b.cnt)))
 
